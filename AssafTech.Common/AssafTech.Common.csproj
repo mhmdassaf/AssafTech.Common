@@ -11,6 +11,13 @@
     <Description>AssafTech Common contain all common class models for AssafTech product.</Description>
     <Product>AssafTech</Product>
     <PackageIcon>AssafTech_logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/mhmdassaf/AssafTech.Common</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+    <PackageTags>AssafTech, Models, Constants, Inputs, Outputs, Dto</PackageTags>
+    <PackageReleaseNotes>Include Identity server common models, appsettings common models</PackageReleaseNotes>
+    <PackAsTool>False</PackAsTool>
+    <NeutralLanguage>en-001</NeutralLanguage>
+    <AnalysisLevel>none</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
