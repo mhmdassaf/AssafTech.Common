@@ -19,12 +19,9 @@ global using Microsoft.OpenApi.Models;
 global using Microsoft.EntityFrameworkCore;
 
 
-
-global using NLog;
 global using NLog.Web;
 global using Newtonsoft.Json;
 
-global using System.ComponentModel.DataAnnotations;
 global using Swashbuckle.AspNetCore.SwaggerGen;
 global using System.Net;
 

@@ -8,7 +8,17 @@ public static class ApplicationBuilderExtension
         return app;
     }
 
-    public static WebApplicationBuilder UseNLog(this WebApplicationBuilder builder)
+	public static WebApplication ApplyMigration<TDbContext>(this WebApplication app) where TDbContext : DbContext
+	{
+		var serviceScope = app.Services.GetService<IServiceScopeFactory>()?.CreateScope();
+		if (serviceScope == null) return app;
+
+		var dbContext = serviceScope.ServiceProvider.GetRequiredService<TDbContext>();
+		dbContext.Database.Migrate();
+		return app;
+	}
+
+	public static WebApplicationBuilder UseNLog(this WebApplicationBuilder builder)
     {
         builder.Logging.ClearProviders();
         builder.Host.UseNLog();
