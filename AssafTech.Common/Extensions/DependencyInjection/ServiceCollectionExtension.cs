@@ -1,6 +1,4 @@
-﻿using AssafTech.Common.Constants.Identity;
-
-namespace AssafTech.Common.Extensions.DependencyInjection;
+﻿namespace AssafTech.Common.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtension
 {

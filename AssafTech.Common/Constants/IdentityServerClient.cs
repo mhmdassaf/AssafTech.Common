@@ -1,4 +1,4 @@
-﻿namespace AssafTech.Common.Constants.Identity;
+﻿namespace AssafTech.Common.Constants;
 
 public struct IdentityServerClient
 {
