@@ -20,7 +20,7 @@
     <AnalysisLevel>none</AnalysisLevel>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
-    <Version>7.0.8</Version>
+    <Version>7.0.9</Version>
   </PropertyGroup>
 
   <ItemGroup>

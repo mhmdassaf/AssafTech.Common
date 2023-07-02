@@ -4,6 +4,8 @@ global using AssafTech.Common.Models;
 global using AssafTech.GenericRepository.Repositories.Interfaces;
 global using AutoMapper;
 
+global using IdentityModel;
+
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Builder;
@@ -24,5 +26,6 @@ global using Newtonsoft.Json;
 
 global using Swashbuckle.AspNetCore.SwaggerGen;
 global using System.Net;
+global using System.Security.Claims;
 
 

@@ -37,11 +37,11 @@ public static class ApplicationBuilderExtension
 
                 switch (exception)
                 {
-                    case NotImplementedException ex:
-                        responseModel.HttpStatusCode = HttpStatusCode.NotImplemented;
+                    case UnauthorizedAccessException ex:
+                        responseModel.HttpStatusCode = HttpStatusCode.Unauthorized;
                         responseModel.Errors.Add(new ErrorModel
                         {
-                            Code = HttpStatusCode.NotImplemented.ToString(),
+                            Code = HttpStatusCode.Unauthorized.ToString(),
                             Message = ex.Message
                         });
                         break;
