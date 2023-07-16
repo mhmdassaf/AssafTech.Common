@@ -2,9 +2,9 @@
 
 public abstract class BaseService
 {
-	public IRepository _repository { get; }
-	public IMapper _mapper { get; }
-	public HttpContext? _httpContext { get; }
+	protected readonly IRepository _repository;
+	protected readonly IMapper _mapper;
+	protected readonly HttpContext? _httpContext;
 
 	public string UserId
 	{
@@ -17,11 +17,14 @@ public abstract class BaseService
 			return userId; 
 		}
 	}
+	public ResponseModel ResponseModel { get; }
 
-    public BaseService(IRepository repository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+	public BaseService(IRepository repository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
     {
 		_repository = repository;
 		_mapper = mapper;
 		_httpContext = httpContextAccessor.HttpContext;
+		var responseModel = new ResponseModel();
+		ResponseModel = responseModel;
 	}
 }

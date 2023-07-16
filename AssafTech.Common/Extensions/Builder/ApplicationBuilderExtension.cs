@@ -35,10 +35,11 @@ public static class ApplicationBuilderExtension
                 var responseModel = new ResponseModel();
                 var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
+                var httpStatusCode = HttpStatusCode.OK;
                 switch (exception)
                 {
                     case UnauthorizedAccessException ex:
-                        responseModel.HttpStatusCode = HttpStatusCode.Unauthorized;
+						httpStatusCode = HttpStatusCode.Unauthorized;
                         responseModel.Errors.Add(new ErrorModel
                         {
                             Code = HttpStatusCode.Unauthorized.ToString(),
@@ -46,17 +47,17 @@ public static class ApplicationBuilderExtension
                         });
                         break;
                     default:
-                        responseModel.HttpStatusCode = HttpStatusCode.InternalServerError;
+						httpStatusCode = HttpStatusCode.InternalServerError;
                         responseModel.Errors.Add(new ErrorModel
                         {
                             Code = HttpStatusCode.InternalServerError.ToString(),
-                            Message = "Internal server error!"
+                            Message = exception?.Message ?? "Internal server error!"
                         });
                         break;
                 }
 
                 context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)responseModel.HttpStatusCode;
+                context.Response.StatusCode = (int)httpStatusCode;
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(responseModel));
             });
         });
