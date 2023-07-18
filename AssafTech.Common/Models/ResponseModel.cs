@@ -9,5 +9,5 @@ public class ResponseModel
 
     public bool Succeeded => !Errors.Any();
     public List<ErrorModel> Errors { get; set; }
-    public dynamic? Result { get; set; }
+    public object? Result { get; set; }
 }
