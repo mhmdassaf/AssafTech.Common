@@ -13,4 +13,9 @@ public enum DatalistParent
 	//12-17
 	[Description("Payment methods")]
 	PaymentMethods = 12,
+
+
+	//18-70
+	[Description("Colors")]
+	Colors = 18
 }
