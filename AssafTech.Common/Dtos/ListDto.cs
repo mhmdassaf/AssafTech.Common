@@ -2,14 +2,24 @@
 
 public class ListDto
 {
-    [DefaultValue(null)]
+	#region Private
+	private string? search;
+	#endregion
+
+	[DefaultValue(null)]
     public string? OrderBy { get; set; }
 
 	[AllowedValuesIf(nameof(OrderBy), Operator.NotEqual, null, Sort.Ascending, Sort.Descending)]
 	[DefaultValue(Sort.Descending)]
 	public string? SortDirection { get; set; }
 
-    [DefaultValue(1)]
+	public string? Search
+	{
+		get { return search; }
+		set { search = value?.ToLower(); }
+	}
+
+	[DefaultValue(1)]
 	public required int PageIndex { get; set; }
 
 	[DefaultValue(10)]
