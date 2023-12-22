@@ -63,4 +63,17 @@ public static class ApplicationBuilderExtension
         });
         return app;
     }
+
+    public static WebApplication ApplyCors(this WebApplication app, params string[] origins)
+    {
+        app.UseCors(builder =>
+        {
+            builder.AllowCredentials()
+                   .WithOrigins(origins)
+                    .SetIsOriginAllowedToAllowWildcardSubdomains()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+        });
+        return app;
+    }
 }

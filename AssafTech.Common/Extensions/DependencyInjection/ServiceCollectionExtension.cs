@@ -4,13 +4,13 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddCommonApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
     {
-        services.Configure<Gateway>(configuration.GetSection(nameof(Gateway)));
+        services.Configure<BaseUrl>(configuration.GetSection(nameof(BaseUrl)));
         return services;
     }
     public static IServiceCollection AddSwagger(this IServiceCollection services, SwaggerModel swaggerModel)
     {
-        var gateway = services.BuildServiceProvider().GetService<IOptions<Gateway>>();
-        if (gateway == null) { throw new ArgumentNullException(nameof(gateway)); }
+        var baseUrl = services.BuildServiceProvider().GetService<IOptions<BaseUrl>>();
+        if (baseUrl == null) { throw new ArgumentNullException(nameof(baseUrl)); }
 
         services.AddSwaggerGen(option =>
         {
@@ -22,42 +22,62 @@ public static class ServiceCollectionExtension
                 {
                     AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = new Uri($"{gateway.Value.BaseUrl}/{ServiceName.Identity}/connect/authorize"),
-                        TokenUrl = new Uri($"{gateway.Value.BaseUrl}/{ServiceName.Identity}/connect/token"),
+                        AuthorizationUrl = new Uri($"{baseUrl.Value.Gateway}/{ServiceName.Identity}/connect/authorize"),
+                        TokenUrl = new Uri($"{baseUrl.Value.Gateway}/{ServiceName.Identity}/connect/token"),
                         Scopes = swaggerModel.IdentityServerScopes
 					}
                 }
             });
             option.OperationFilter<AuthorizeCheckOperationFilter>();
-            option.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type= ReferenceType.SecurityScheme,
-                            Id= JwtBearerDefaults.AuthenticationScheme
-                        }
-                    },
-                    new string[]{}
-                }
-            });
+            //option.AddSecurityRequirement(new OpenApiSecurityRequirement
+            //{
+            //    {
+            //        new OpenApiSecurityScheme
+            //        {
+            //            Reference = new OpenApiReference
+            //            {
+            //                Type= ReferenceType.SecurityScheme,
+            //                Id= JwtBearerDefaults.AuthenticationScheme
+            //            }
+            //        },
+            //        new string[]{}
+            //    }
+            //});
         });
 
         return services;
     }
-    public static IServiceCollection AddAuth(this IServiceCollection services)
+    public static IServiceCollection AddAuth(this IServiceCollection services, string clientId, string clientSecret)
     {
-        var gateway = services.BuildServiceProvider().GetService<IOptions<Gateway>>();
-        if (gateway == null) { throw new ArgumentNullException(nameof(gateway)); }
+        var baseUrl = services.BuildServiceProvider().GetService<IOptions<BaseUrl>>();
+        var identityBaseUrl = baseUrl?.Value.Identity;
+        if (identityBaseUrl == null) { throw new ArgumentNullException(nameof(identityBaseUrl)); }
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+        });
+
+        // Register the OpenIddict validation components.
+        services.AddOpenIddict()
+                .AddValidation(options =>
                 {
-                    options.Authority = $"{gateway.Value.BaseUrl}/{ServiceName.Identity}";
-                    //options.ApiName = IdentityServerApi.Name.Datalist; // its the resource api name (its needed when there is a communication btw this api and another api internally)
-                    options.RequireHttpsMetadata = false;
+                    // Note: the validation handler uses OpenID Connect discovery
+                    // to retrieve the address of the introspection endpoint.
+                    options.SetIssuer(identityBaseUrl);
+                    //options.AddAudiences(clientId);
+
+                    // Configure the validation handler to use introspection and register the client
+                    // credentials used when communicating with the remote introspection endpoint.
+                    options.UseIntrospection()
+                           .SetClientId(clientId)
+                           .SetClientSecret(clientSecret);
+
+                    // Register the System.Net.Http integration.
+                    options.UseSystemNetHttp();
+
+                    // Register the ASP.NET Core host.
+                    options.UseAspNetCore();
                 });
 
         return services;

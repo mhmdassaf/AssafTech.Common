@@ -9,7 +9,7 @@ public abstract class BaseService
 	public string UserId
 	{
 		get {
-			string? userId = _httpContext?.User.FindFirstValue(JwtClaimTypes.Subject);
+			string? userId = _httpContext?.User.FindFirstValue(Claims.Subject);
 			if (string.IsNullOrWhiteSpace(userId))
 			{
 				throw new UnauthorizedAccessException($"{nameof(UserId)} {General.IsNull}");
