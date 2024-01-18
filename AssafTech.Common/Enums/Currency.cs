@@ -2,9 +2,9 @@
 
 public enum Currency
 {
-	[Description("USD Doller")]
+	[Description("$")]
 	USD = 2,
 
-	[Description("Lebanse Pound")]
+	[Description("L.L")]
 	LBP = 3
 }

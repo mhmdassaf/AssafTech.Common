@@ -8,6 +8,7 @@ public struct IdentityServerClient
         public const string ManageProductPortal = "manageProductPortal-client_id";
         public const string ManageProductAPI = "manageProductApi-client_id";
         public const string AssafTechDatalistAPI = "assafTech-datalistApi-client_id";
+        public const string AssafTechCRMAPI = "assafTech-crmApi-client_id";
     }
 
     public struct Name
@@ -16,6 +17,7 @@ public struct IdentityServerClient
         public const string ManageProductPortal = "ManageProduct Portal Client";
         public const string ManageProductAPI = "ManageProduct API Client";
         public const string AssafTechDatalistAPI = "AssafTech Datalist API Client";
+        public const string AssafTechCRMAPI = "AssafTech CRM API Client";
     }
 
     public struct Secret
@@ -23,6 +25,7 @@ public struct IdentityServerClient
         public const string Swagger = "C7gNU3sdo+OL0wNhqoVWhr3g1s1xYv72ol/pe/Unolq=";
         public const string ManageProductAPI = "T7gNU3sdo+OL0wNhqoVWhr3g4s1xYv72ol/pe/Unols=";
         public const string AssafTechDatalistAPI = "F7gNU3sdo+OL0wNhqoVWhr3g3s1xYv72ol/pe/Unolj=";
+        public const string AssafTechCRMAPI = "W7gNU3sdo+OS0wNhqoVWhr3g3s1xYv72cl/pe/Uvolj=";
     }
 
 }
