@@ -40,11 +40,11 @@ public static class ApplicationBuilderExtension
                 {
                     case UnauthorizedAccessException ex:
 						httpStatusCode = HttpStatusCode.Unauthorized;
-                        responseModel.Errors.Add(new ErrorModel(HttpStatusCode.Unauthorized.ToString(), ex.Message));
+                        responseModel.Errors.Add(new ErrorModel((int)HttpStatusCode.Unauthorized, ex.Message));
                         break;
                     default:
 						httpStatusCode = HttpStatusCode.InternalServerError;
-                        responseModel.Errors.Add(new ErrorModel(HttpStatusCode.InternalServerError.ToString(),exception?.Message ?? "Internal server error!"));
+                        responseModel.Errors.Add(new ErrorModel((int)HttpStatusCode.InternalServerError,exception?.Message ?? "Internal server error!"));
                         break;
                 }
 
