@@ -4,7 +4,7 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddCommonApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
     {
-        services.Configure<BaseUrl>(configuration.GetSection(nameof(BaseUrl)));
+        services.Configure<BaseUrl>(configuration.GetSection(nameof(BaseUrl)));     
         return services;
     }
     public static IServiceCollection AddSwagger(this IServiceCollection services, SwaggerModel swaggerModel)
@@ -47,7 +47,18 @@ public static class ServiceCollectionExtension
 
         return services;
     }
-    public static IServiceCollection AddAuth(this IServiceCollection services, string clientId, string clientSecret)
+
+    /// <summary>
+    /// Add Authentication to your app
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="clientId"></param>
+    /// <param name="clientSecret"></param>
+    /// <param name="canActingAsClient">true to allow the application to make http request 
+    /// to another micro-services or to request any other external api</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static IServiceCollection AddAuth(this IServiceCollection services, string clientId, string clientSecret, bool canActingAsClient)
     {
         var baseUrl = services.BuildServiceProvider().GetService<IOptions<BaseUrl>>();
         var identityBaseUrl = baseUrl?.Value.Identity;
@@ -59,7 +70,7 @@ public static class ServiceCollectionExtension
         });
 
         // Register the OpenIddict validation components.
-        services.AddOpenIddict()
+        var openIddictBuilder = services.AddOpenIddict()
                 .AddValidation(options =>
                 {
                     // Note: the validation handler uses OpenID Connect discovery
@@ -80,6 +91,34 @@ public static class ServiceCollectionExtension
                     options.UseAspNetCore();
                 });
 
+        //to allow the application to make http request to another micro-services
+        if(canActingAsClient)
+        {
+            openIddictBuilder.AddClient(options =>
+            {
+                // Allow grant_type=client_credentials to be negotiated.
+                options.AllowClientCredentialsFlow();
+
+                // Disable token storage, which is not necessary for non-interactive flows like
+                // grant_type=password, grant_type=client_credentials or grant_type=refresh_token.
+                options.DisableTokenStorage();
+
+                // Register the System.Net.Http integration and use the identity of the current
+                // assembly as a more specific user agent, which can be useful when dealing with
+                // providers that use the user agent as a way to throttle requests (e.g Reddit).
+                options.UseSystemNetHttp();
+
+                // Add a client registration matching the client application definition in the server project.
+                options.AddRegistration(new OpenIddictClientRegistration
+                {
+                    Issuer = new Uri(identityBaseUrl, UriKind.Absolute),
+                    ClientId = clientId,
+                    ClientSecret = clientSecret
+                });
+            });
+            services.RegisterHttpClient();
+        }
+
         return services;
     }
     public static IServiceCollection AddDatabase<TContext>(this IServiceCollection services, ConfigurationManager configuration)
@@ -92,6 +131,36 @@ public static class ServiceCollectionExtension
 
         return services;
 	}
+
+    #region Private
+    private static IServiceCollection RegisterHttpClient(this IServiceCollection services)
+    {
+        var provider = services.BuildServiceProvider();
+        var baseUrl = provider.GetService<IOptions<BaseUrl>>();
+        if (baseUrl == null ||
+            baseUrl.Value == null ||
+            baseUrl.Value.Gateway == null)
+        {
+            throw new ArgumentNullException(nameof(baseUrl.Value.Gateway));
+        }
+
+        var service = provider.GetRequiredService<OpenIddictClientService>();
+
+        var result = service.AuthenticateWithClientCredentialsAsync(new()).Result;
+        var accessToken = result.AccessToken;
+
+        services.AddHttpClient(HttpClientName.AssafTechApiClient, client =>
+        {
+            //client.BaseAddress = new Uri("http://localhost:44384");//crm base url
+            client.BaseAddress = new Uri(baseUrl.Value.Gateway);//crm base url
+            // Additional configuration such as headers, timeouts, etc. can be done here
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        });
+
+        services.AddScoped<IApiService, HttpClientService>();
+        return services;
+    }
+    #endregion
 }
 
 public class AuthorizeCheckOperationFilter : IOperationFilter

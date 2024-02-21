@@ -1,4 +1,6 @@
-﻿namespace AssafTech.Common.DataAnnotations;
+﻿using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
+
+namespace AssafTech.Common.DataAnnotations;
 
 public class AllowedValuesIfAttribute : ValidationAttribute
 {
@@ -85,7 +87,7 @@ public class AllowedValuesIfAttribute : ValidationAttribute
 			var valueAsString = value?.ToString();
 			if (string.IsNullOrWhiteSpace(valueAsString))
 			{
-				return new ValidationResult($"{validationContext.MemberName} {General.IsRequired}");
+				return new ValidationResult($"{validationContext.MemberName} {ValidationMsg.IsRequired}");
 			}
 			else
 			{

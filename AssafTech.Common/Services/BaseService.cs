@@ -12,7 +12,7 @@ public abstract class BaseService
 			string? userId = _httpContext?.User.FindFirstValue(Claims.Subject);
 			if (string.IsNullOrWhiteSpace(userId))
 			{
-				throw new UnauthorizedAccessException($"{nameof(UserId)} {General.IsNull}");
+				throw new UnauthorizedAccessException($"{nameof(UserId)} {ValidationMsg.IsNull}");
 			}
 			return userId; 
 		}
