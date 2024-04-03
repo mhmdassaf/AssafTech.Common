@@ -1,4 +1,4 @@
-﻿namespace AssafTech.Common.Extensions.Builder;
+﻿namespace AssafTech.Common.Extensions;
 
 public static class ApplicationBuilderExtension
 {

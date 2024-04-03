@@ -1,10 +1,10 @@
-﻿namespace AssafTech.Common.Extensions.DependencyInjection;
+﻿namespace AssafTech.Common.Extensions;
 
 public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddCommonApplicationServices(this IServiceCollection services, ConfigurationManager configuration)
     {
-        services.Configure<BaseUrl>(configuration.GetSection(nameof(BaseUrl)));     
+        services.Configure<BaseUrl>(configuration.GetSection(nameof(BaseUrl)));
         return services;
     }
     public static IServiceCollection AddSwagger(this IServiceCollection services, SwaggerModel swaggerModel)
@@ -25,7 +25,7 @@ public static class ServiceCollectionExtension
                         AuthorizationUrl = new Uri($"{baseUrl.Value.Gateway}/{ServiceName.Identity}/connect/authorize"),
                         TokenUrl = new Uri($"{baseUrl.Value.Gateway}/{ServiceName.Identity}/connect/token"),
                         Scopes = swaggerModel.IdentityServerScopes
-					}
+                    }
                 }
             });
             option.OperationFilter<AuthorizeCheckOperationFilter>();
@@ -92,7 +92,7 @@ public static class ServiceCollectionExtension
                 });
 
         //to allow the application to make http request to another micro-services
-        if(canActingAsClient)
+        if (canActingAsClient)
         {
             openIddictBuilder.AddClient(options =>
             {
@@ -124,13 +124,13 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddDatabase<TContext>(this IServiceCollection services, ConfigurationManager configuration)
         where TContext : DbContext
     {
-		services.AddDbContext<TContext>(config =>
-		{
-			config.UseNpgsql(configuration.GetConnectionString(nameof(ConnectionStrings.AssafTechConnection)));
-		});
+        services.AddDbContext<TContext>(config =>
+        {
+            config.UseNpgsql(configuration.GetConnectionString(nameof(ConnectionStrings.AssafTechConnection)));
+        });
 
         return services;
-	}
+    }
 
     #region Private
     private static IServiceCollection RegisterHttpClient(this IServiceCollection services)
