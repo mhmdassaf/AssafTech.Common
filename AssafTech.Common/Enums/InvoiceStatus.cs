@@ -2,12 +2,12 @@
 
 public enum InvoiceStatus
 {
-	[Description("Invoice Pending")]
+	[Description("غير مدفوعة")]
 	Pending = 7,
 
-	[Description("Invoice Partially Paid")]
+	[Description("مدفوعة جزئيا")]
 	PartiallyPaid = 8,
 
-	[Description("Invoice Paid")]
+	[Description("مدفوعة")]
 	Paid = 9,
 }
