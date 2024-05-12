@@ -2,7 +2,7 @@
 
 public static class EnumHelper
 {
-	public static string? ToDescription(this Enum value)
+	public static string ToDescription(this Enum value)
 	{
 		var fieldInfo = value.GetType().GetField(value.ToString());
 		if (fieldInfo == null) return value.GetDisplayName();
